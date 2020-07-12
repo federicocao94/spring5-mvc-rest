@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CustomerControllerTest {
 
     private final String LASTNAME = "Jimmy";
+    private final Long ID = 1L;
 
     @Mock
     CustomerService customerService;
@@ -69,20 +70,20 @@ public class CustomerControllerTest {
 
 
     @Test
-    public void getCustomerByLastname() throws Exception {
+    public void getCustomerById() throws Exception {
         //given
         CustomerDTO customer = new CustomerDTO();
-        customer.setId(1L);
+        customer.setId(ID);
         customer.setLastname(LASTNAME);
         customer.setFirstname("Mario");
 
         //when
-        when(customerService.getCustomerByLastname(LASTNAME)).thenReturn(customer);
+        when(customerService.getCustomerById(ID)).thenReturn(customer);
 
         //then
-        mockMvc.perform(get("/api/v1/customers/" + LASTNAME)
-                    .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v1/customers/" + ID)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastname", equalTo(LASTNAME)));
+                .andExpect(jsonPath("$.id", equalTo(1)));
     }
 }

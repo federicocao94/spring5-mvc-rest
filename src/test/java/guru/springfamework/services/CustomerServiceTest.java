@@ -50,22 +50,4 @@ public class CustomerServiceTest {
         assertEquals(3, customersDTO.size());
     }
 
-
-    @Test
-    public void getCustomerByLastname() throws Exception {
-        //given
-        Customer customer = new Customer();
-        customer.setId(ID);
-        customer.setFirstname(NAME);
-        customer.setLastname(LASTNAME);
-
-        //when
-        when(customerRepository.findByLastname(LASTNAME)).thenReturn(customer);
-
-        //then
-        CustomerDTO customerDTO = customerService.getCustomerByLastname(LASTNAME);
-
-        assertEquals(ID, customerDTO.getId());
-        assertEquals(LASTNAME, customerDTO.getLastname());
-    }
 }

@@ -16,4 +16,6 @@ public class CustomerDTO {
     String firstname;
 
     String lastname;
+
+    String customerUrl;
 }

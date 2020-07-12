@@ -29,9 +29,9 @@ public class CustomerController {
     }
 
 
-    @GetMapping("{lastname}")
-    public ResponseEntity<CustomerDTO> getCustomerByLastname(@PathVariable String lastname) {
+    @GetMapping("{id}")
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
 
-        return new ResponseEntity(customerService.getCustomerByLastname(lastname), HttpStatus.OK);
+        return new ResponseEntity(customerService.getCustomerById(id), HttpStatus.OK);
     }
 }
