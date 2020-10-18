@@ -53,7 +53,7 @@ public class CustomerServiceImplIT {
     }
 
     @Test
-    public void patchCustomerUpdateFirstName() throws Exception {
+    public void patchCustomerUpdateFirstName() {
         String updatedName = "UpdatedName";
         long id = getCustomerIdValue();
 
@@ -77,7 +77,7 @@ public class CustomerServiceImplIT {
     }
 
     @Test
-    public void patchCustomerUpdateLastName() throws Exception {
+    public void patchCustomerUpdateLastName() {
         String updatedName = "UpdatedName";
         long id = getCustomerIdValue();
 

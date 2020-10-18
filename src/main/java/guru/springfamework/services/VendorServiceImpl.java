@@ -49,8 +49,10 @@ public class VendorServiceImpl implements VendorService {
 
 
     public VendorDTO createNewVendor(VendorDTO vendorDTO) {
-        Vendor vendor = vendorMapper.vendorDtoToVendor(vendorDTO);
+        return saveAndReturnVendorDTO(vendorMapper.vendorDtoToVendor(vendorDTO));
+    }
 
+    private VendorDTO saveAndReturnVendorDTO(Vendor vendor) {
         Vendor savedVendor = vendorRepository.save(vendor);
 
         VendorDTO savedVendorDTO = vendorMapper.vendorToVendorDTO(savedVendor);
@@ -67,6 +69,25 @@ public class VendorServiceImpl implements VendorService {
 
     public void deleteVendor(Long id) {
         vendorRepository.deleteById(id);
+    }
+
+
+    public VendorDTO saveVendorByDTO(Long id,VendorDTO vendorDTO) {
+        Vendor vendor = vendorMapper.vendorDtoToVendor(vendorDTO);
+        vendor.setId(id);
+
+        return saveAndReturnVendorDTO(vendor);
+    }
+
+
+    public VendorDTO patchVendor(Long id, VendorDTO vendorDTO) {
+        Vendor vendor = vendorRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        if(vendorDTO.getName() != null) {
+            vendor.setName(vendorDTO.getName());
+        }
+
+        return saveAndReturnVendorDTO(vendor);
     }
 
 }

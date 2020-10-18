@@ -34,7 +34,7 @@ public class VendorControllerTest extends AbstractRestControllerTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.standaloneSetup(vendorController)
@@ -112,6 +112,46 @@ public class VendorControllerTest extends AbstractRestControllerTest {
                 .andExpect(status().isOk());
 
         verify(vendorService, times(1)).deleteVendor(anyLong());
+    }
+
+
+    @Test
+    public void testUpdateVendor() throws Exception {
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("vendor1");
+
+        VendorDTO updatedVendorDTO = new VendorDTO();
+        updatedVendorDTO.setName(vendorDTO.getName());
+        updatedVendorDTO.setVendorUrl(VendorController.BASE_URL + "/1");
+
+        when(vendorService.saveVendorByDTO(anyLong(), any(VendorDTO.class))).thenReturn(updatedVendorDTO);
+
+        mockMvc.perform(put(VendorController.BASE_URL + "/1")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(vendorDTO)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name", equalTo(vendorDTO.getName())))
+        .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
+    }
+
+
+    @Test
+    public void testPatchVendor() throws Exception {
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("vendor1");
+
+        VendorDTO updatedVendorDTO = new VendorDTO();
+        updatedVendorDTO.setName(vendorDTO.getName());
+        updatedVendorDTO.setVendorUrl(VendorController.BASE_URL + "/1");
+
+        when(vendorService.patchVendor(anyLong(), any(VendorDTO.class))).thenReturn(updatedVendorDTO);
+
+        mockMvc.perform(patch(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO.getName())))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
     }
 
 }

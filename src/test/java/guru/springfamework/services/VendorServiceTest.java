@@ -2,6 +2,7 @@ package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.controllers.v1.VendorController;
 import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.junit.Before;
@@ -26,7 +27,7 @@ public class VendorServiceTest {
     VendorService vendorService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         vendorService = new VendorServiceImpl(VendorMapper.INSTANCE, vendorRepository);
@@ -34,7 +35,7 @@ public class VendorServiceTest {
 
 
     @Test
-    public void getAllVendors() throws Exception {
+    public void getAllVendors() {
         //given
         List<Vendor> vendors = Arrays.asList(new Vendor(), new Vendor());
 
@@ -49,12 +50,12 @@ public class VendorServiceTest {
 
 
     @Test
-    public void getVendor() throws Exception {
+    public void getVendor() {
         //given
         Vendor vendor = new Vendor();
         vendor.setName("vendor1");
 
-        when(vendorRepository.findById(anyLong())).thenReturn(Optional.ofNullable(vendor));
+        when(vendorRepository.findById(anyLong())).thenReturn(Optional.of(vendor));
 
         //when
         VendorDTO vendorDTO = vendorService.getVendor(1L);
@@ -65,7 +66,7 @@ public class VendorServiceTest {
 
 
     @Test
-    public void createNewVendor() throws Exception {
+    public void createNewVendor() {
         //given
         VendorDTO vendorDTO = new VendorDTO();
         vendorDTO.setName("vendor1");
@@ -84,11 +85,32 @@ public class VendorServiceTest {
 
 
     @Test
-    public void testDeleteVendor() throws Exception {
+    public void testDeleteVendor() {
         Long id = 1L;
 
         vendorService.deleteVendor(id);
 
         verify(vendorRepository, times(1)).deleteById(anyLong());
+    }
+
+
+    @Test
+    public void saveVendorByDTO() {
+        //given
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("vendor1");
+
+        Vendor savedVendor = new Vendor();
+        savedVendor.setName(vendorDTO.getName());
+        savedVendor.setId(1L);
+
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(savedVendor);
+
+        //when
+        VendorDTO savedVendorDTO = vendorService.saveVendorByDTO(1L, vendorDTO);
+
+        //then
+        assertEquals(savedVendorDTO.getName(), vendorDTO.getName());
+        assertEquals(VendorController.BASE_URL + "/1", savedVendorDTO.getVendorUrl());
     }
 }
