@@ -48,7 +48,25 @@ public class VendorServiceImpl implements VendorService {
     }
 
 
+    public VendorDTO createNewVendor(VendorDTO vendorDTO) {
+        Vendor vendor = vendorMapper.vendorDtoToVendor(vendorDTO);
+
+        Vendor savedVendor = vendorRepository.save(vendor);
+
+        VendorDTO savedVendorDTO = vendorMapper.vendorToVendorDTO(savedVendor);
+        savedVendorDTO.setVendorUrl(getVendorUrl(savedVendor.getId()));
+
+        return savedVendorDTO;
+    }
+
+
     private String getVendorUrl(Long id) {
         return VendorController.BASE_URL + "/" + id;
     }
+
+
+    public void deleteVendor(Long id) {
+        vendorRepository.deleteById(id);
+    }
+
 }

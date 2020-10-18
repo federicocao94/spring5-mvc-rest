@@ -13,9 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class VendorServiceTest {
 
@@ -60,5 +61,34 @@ public class VendorServiceTest {
 
         //then
         assertEquals("vendor1", vendorDTO.getName());
+    }
+
+
+    @Test
+    public void createNewVendor() throws Exception {
+        //given
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("vendor1");
+
+        Vendor savedVendor = new Vendor();
+        savedVendor.setName(vendorDTO.getName());
+
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(savedVendor);
+
+        //when
+        VendorDTO savedVendorDTO = vendorService.createNewVendor(vendorDTO);
+
+        //then
+        assertEquals(savedVendorDTO.getName(), vendorDTO.getName());
+    }
+
+
+    @Test
+    public void testDeleteVendor() throws Exception {
+        Long id = 1L;
+
+        vendorService.deleteVendor(id);
+
+        verify(vendorRepository, times(1)).deleteById(anyLong());
     }
 }

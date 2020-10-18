@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,8 +21,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.Arrays;
-
-import static org.mockito.Mockito.when;
 
 public class VendorControllerTest extends AbstractRestControllerTest {
 
@@ -80,4 +80,38 @@ public class VendorControllerTest extends AbstractRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo("vendor1")));
     }
+
+
+    @Test
+    public void testCreateVendor() throws Exception{
+        //given
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("vendor1");
+
+        VendorDTO savedVendorDTO = new VendorDTO();
+        savedVendorDTO.setName(vendorDTO.getName());
+        savedVendorDTO.setVendorUrl(VendorController.BASE_URL + "/1");
+
+        //when
+        when(vendorService.createNewVendor(any(VendorDTO.class))).thenReturn(savedVendorDTO);
+
+        //then
+        mockMvc.perform(post(VendorController.BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO.getName())))
+                .andExpect(jsonPath("vendor_url", equalTo(VendorController.BASE_URL + "/1")));
+    }
+
+
+    @Test
+    public void testDeleteVendor() throws Exception {
+        mockMvc.perform(delete(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(vendorService, times(1)).deleteVendor(anyLong());
+    }
+
 }
